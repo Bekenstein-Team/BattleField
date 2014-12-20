@@ -1,4 +1,3 @@
 Battlefield
 ===========
-
-Teamwork - High-Quality Code
+High-Quality Code Team Project
