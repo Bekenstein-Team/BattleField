@@ -43,7 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="bombite.cs" />
+    <Compile Include="BattleField.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
