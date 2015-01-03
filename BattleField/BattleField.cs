@@ -6,34 +6,102 @@
     {
         public static void Main()
         {
-            Console.Write("Enter the size of the battle field: n = ");
-            string en = Console.ReadLine();
-            int n = int.Parse(en);
+            Console.WriteLine("Welcome to \"Battle Field\" game.");
+            Console.Write("Enter the size of the battle field between 1 and 10: ");
+            int battleFieldSize;
+            string input = Console.ReadLine();
+            while (!int.TryParse(input, out battleFieldSize) ||
+                    battleFieldSize > 10 ||
+                    battleFieldSize < 1)
+            {
+                Console.Write("Please enter an integer between 1 and 10: ");
+                input = Console.ReadLine();
+            }
 
+            string[,] battleField = InitializeField(battleFieldSize);
+
+            Console.WriteLine();
+            PrintField(battleField);
+            Console.WriteLine();
+            int moveCounter = 0;
+
+            // main loop
+            while (true)
+            {
+                // reading user input
+                Console.Write("Please enter coordinates: ");
+                string[] inputCoordinates = Console.ReadLine().Split(new [] {' '});
+                int row = int.Parse(inputCoordinates[0]);
+                int col = int.Parse(inputCoordinates[1]);
+
+                // checking the field
+                if (battleField[row, col] == "-" ||
+                    battleField[row, col] == "X")
+                {
+                    Console.WriteLine("Invalid move!");
+                }
+                else
+                {
+                    battleField = HodNaIgracha(row, col, battleFieldSize, battleField);
+                    moveCounter++;
+                }
+                
+                PrintField(battleField);
+                int count = 0;
+                bool gameEnded = false;
+                for (int rowCheck = 0; rowCheck < battleFieldSize; rowCheck++)
+                {
+                    for (int colCheck = 0; colCheck < battleFieldSize; colCheck++)
+                    {
+                        if (battleField[rowCheck, colCheck] == "-" ||
+                            battleField[rowCheck, colCheck] == "X")
+                        {
+                            count++;
+                        }
+
+                        if (count == battleFieldSize * battleFieldSize)
+                        {
+                            gameEnded = true; 
+                        }
+                    }
+                }
+                
+                if (gameEnded)
+                {
+                    PrintField(battleField);
+                    Console.WriteLine("Game over!");
+                    Console.WriteLine("Detonated mines {0}", moveCounter);
+                    break;
+                }
+            }
+        }
+
+        private static string[,] InitializeField(int battleFieldSize)
+        {
             //tuka si pravq poleto
-            string[,] battleField = new string[n, n];
+            string[,] battleField = new string[battleFieldSize, battleFieldSize];
             Random randomPosition = new Random();
 
             //celta na tova e da se zapylni matricata default s cherti
-            for (int row = 0; row < n; row++)
+            for (int row = 0; row < battleFieldSize; row++)
             {
-                for (int col = 0; col < n; col++)
+                for (int col = 0; col < battleFieldSize; col++)
                 {
                     battleField[row, col] = "-";
                 }
             }
 
             string[] minesArray = { "1", "2", "3", "4", "5" };
-            double fifteenPercentNSquared = 0.15 * n * n; 
-            double thirtyPercenNSquared = 0.3 * n * n;
+            double fifteenPercentNSquared = 0.15 * battleFieldSize * battleFieldSize;
+            double thirtyPercenNSquared = 0.3 * battleFieldSize * battleFieldSize;
             int fifteenPercent = Convert.ToInt16(fifteenPercentNSquared);
             int thirtyPercent = Convert.ToInt16(thirtyPercenNSquared);
             int numberOfMines = randomPosition.Next(fifteenPercent, thirtyPercent + 1);
 
             for (int i = 0; i < numberOfMines; i++)
             {
-                int newRow = randomPosition.Next(0, n);
-                int newCol = randomPosition.Next(0, n);
+                int newRow = randomPosition.Next(0, battleFieldSize);
+                int newCol = randomPosition.Next(0, battleFieldSize);
                 if (battleField[newRow, newCol] == "-")
                 {
                     battleField[newRow, newCol] = minesArray[randomPosition.Next(0, 5)];
@@ -44,112 +112,10 @@
                 }
             }
 
-            Console.WriteLine("Welcome to \"Battle Field\" game.");
-
-            //tuka pochvame
-            Console.WriteLine();
-            printirai(battleField);
-            Console.WriteLine();
-            int moveCounter = 0;
-
-            //this is a cycle from ZERO to ONE-HUNDRED 
-            for (int turns = 0; turns < 100; turns++)
-            {
-                //here we read a string from the console
-                Console.Write("Please enter coordinates: ");
-                string line = Console.ReadLine();
-                string stringRow = "";
-                string stringCol = "";
-                int row;
-                int col;
-                bool flagForRow = true;
-                bool flagForCol = false;
-                int positionWhenIStopped = 0;
-
-                for (int i = 0; i < 100; i++)
-                {
-                    if (flagForRow)
-                    {
-                        if (line[i] != ' ')
-                        {
-                            stringRow += line[i];
-                            if (line[i + 1] == ' ')
-                            {
-                                positionWhenIStopped = i + 1;
-                                flagForRow = false;
-                                flagForCol = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                for (int i = positionWhenIStopped; i < 100; i++)
-                {
-                    if (flagForCol)
-                    {
-                        if (line[i] != ' ')
-                        {
-                            stringCol = stringCol + line[i];
-                            break;
-                        }
-                    }
-                }
-
-                row = int.Parse(stringRow);
-                col = int.Parse(stringCol);
-                if (battleField[row, col] == "-" ||
-                    battleField[row, col] == "X")
-                {
-                    if (turns > 0)
-                    {
-                        turns -= turns;
-                    }
-                    else
-                    {
-                        turns = -1;
-                    }
-
-                    Console.WriteLine("Invalid move!");
-                }
-
-                //tuka proverqvam dali emina
-                if (battleField[row, col] == "1" || battleField[row, col] == "2" || battleField[row, col] == "3" || battleField[row, col] == "4" || battleField[row, col] == "5")
-                {
-                    battleField = HodNaIgracha(row, col, n, battleField);
-                    moveCounter++;
-                }
-                
-                printirai(battleField);
-                int count = 0;
-                bool krai = false;
-                for (int rowCheck = 0; rowCheck < n; rowCheck++)
-                {
-                    for (int colCheck = 0; colCheck < n; colCheck++)
-                    {
-                        if (battleField[rowCheck, colCheck] == "-" || battleField[rowCheck, colCheck] == "X")
-                        {
-                            count++;
-                        }
-
-                        if (count == n * n)
-                        {
-                            krai = true; 
-                        }
-                    }
-                }
-                
-                if (krai)
-                {
-                    printirai(battleField);
-                    Console.WriteLine("Game over!");
-                    PrintMoves(moveCounter);
-                    break;
-                }
-            }
+            return battleField;
         }
 
-        public static string[,] HodNaIgracha(int row, int col, int n, string[,] battleField)
+        private static string[,] HodNaIgracha(int row, int col, int n, string[,] battleField)
         {
             if (Convert.ToInt16(battleField[row, col]) >= 1)
             {
@@ -290,59 +256,32 @@
             return battleField;
         }
 
-        public static void printirai(string[,] battleField)
+        private static void PrintField(string[,] battleField)
         {
+            Console.Write("   0  ");
+            for (int i = 1; i < battleField.GetLength(0); i++)
+            {
+                Console.Write("{0}  ", i);
+            }
+
+            Console.WriteLine();
+            Console.Write("   -");
             for (int i = 0; i < battleField.GetLength(0); i++)
             {
-                if (i == 0)
-                {
-                    Console.Write("   {0}  ", i);
-                }
-                else
-                {
-                    Console.Write("{0}  ", i);
-                }
+                Console.Write("---");
             }
 
             Console.WriteLine();
             for (int i = 0; i < battleField.GetLength(0); i++)
             {
-                if (i == 0)
+                Console.Write("{0}|", i);
+                for (int j = 0; j < battleField.GetLength(1); j++)
                 {
-                    Console.Write("   -", i);
-                }
-                else
-                {
-                    Console.Write("---");
-                }
-            }
-
-            Console.WriteLine();
-            for (int i = 0; i < battleField.GetLength(0); i++)
-            {
-                for (int j = -2; j < battleField.GetLength(1); j++)
-                {
-                    if (j == -2)
-                    {
-                        Console.Write("{0}", i);
-                    }
-                    else if (j == -1)
-                    {
-                        Console.Write("|");
-                    }
-                    else
-                    {
-                        Console.Write(" {0} ", battleField[i, j]);
-                    }
+                    Console.Write(" {0} ", battleField[i, j]);
                 }
 
                 Console.WriteLine();
             }
-        }
-
-        public static void PrintMoves(int moves)
-        {
-            Console.WriteLine("Detonated mines {0}", moves);
         }
     }
 }
