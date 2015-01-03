@@ -1,262 +1,55 @@
 ﻿namespace BattleFiled
 {
     using System;
+    using System.Text.RegularExpressions;
 
     public class BattleField
     {
+        private static int battleFieldSize;
+        private static string[,] battleField;
+
         public static void Main()
         {
-            Console.WriteLine("Welcome to \"Battle Field\" game.");
+            Console.WriteLine("Welcome to the \"Battle Field\" game.");
             Console.Write("Enter the size of the battle field between 1 and 10: ");
-            int battleFieldSize;
-            string input = Console.ReadLine();
-            while (!int.TryParse(input, out battleFieldSize) ||
-                    battleFieldSize > 10 ||
-                    battleFieldSize < 1)
-            {
-                Console.Write("Please enter an integer between 1 and 10: ");
-                input = Console.ReadLine();
-            }
-
-            string[,] battleField = InitializeField(battleFieldSize);
+            InitializeField();
 
             Console.WriteLine();
-            PrintField(battleField);
+            PrintField();
             Console.WriteLine();
             int moveCounter = 0;
 
             // main loop
             while (true)
             {
-                // reading user input
                 Console.Write("Please enter coordinates: ");
-                string[] inputCoordinates = Console.ReadLine().Split(new [] {' '});
-                int row = int.Parse(inputCoordinates[0]);
-                int col = int.Parse(inputCoordinates[1]);
+                int[] userInput = ProcessUserInput();
+                int row = userInput[0];
+                int col = userInput[1];
 
-                // checking the field
-                if (battleField[row, col] == "-" ||
-                    battleField[row, col] == "X")
+                // checking the selected field
+                if (battleField[row, col] == "-" || battleField[row, col] == "X")
                 {
                     Console.WriteLine("Invalid move!");
                 }
                 else
                 {
-                    battleField = HodNaIgracha(row, col, battleFieldSize, battleField);
+                    ProcessMineDetonation(row, col);
                     moveCounter++;
                 }
-                
-                PrintField(battleField);
-                int count = 0;
-                bool gameEnded = false;
-                for (int rowCheck = 0; rowCheck < battleFieldSize; rowCheck++)
-                {
-                    for (int colCheck = 0; colCheck < battleFieldSize; colCheck++)
-                    {
-                        if (battleField[rowCheck, colCheck] == "-" ||
-                            battleField[rowCheck, colCheck] == "X")
-                        {
-                            count++;
-                        }
 
-                        if (count == battleFieldSize * battleFieldSize)
-                        {
-                            gameEnded = true; 
-                        }
-                    }
-                }
-                
-                if (gameEnded)
+                PrintField();
+
+                // checking if there are more mines
+                if (CountDetonatedFields() >= battleFieldSize * battleFieldSize)
                 {
-                    PrintField(battleField);
-                    Console.WriteLine("Game over!");
-                    Console.WriteLine("Detonated mines {0}", moveCounter);
+                    Console.WriteLine("Game over. Detonated mines: {0}", moveCounter);
                     break;
                 }
             }
         }
 
-        private static string[,] InitializeField(int battleFieldSize)
-        {
-            //tuka si pravq poleto
-            string[,] battleField = new string[battleFieldSize, battleFieldSize];
-            Random randomPosition = new Random();
-
-            //celta na tova e da se zapylni matricata default s cherti
-            for (int row = 0; row < battleFieldSize; row++)
-            {
-                for (int col = 0; col < battleFieldSize; col++)
-                {
-                    battleField[row, col] = "-";
-                }
-            }
-
-            string[] minesArray = { "1", "2", "3", "4", "5" };
-            double fifteenPercentNSquared = 0.15 * battleFieldSize * battleFieldSize;
-            double thirtyPercenNSquared = 0.3 * battleFieldSize * battleFieldSize;
-            int fifteenPercent = Convert.ToInt16(fifteenPercentNSquared);
-            int thirtyPercent = Convert.ToInt16(thirtyPercenNSquared);
-            int numberOfMines = randomPosition.Next(fifteenPercent, thirtyPercent + 1);
-
-            for (int i = 0; i < numberOfMines; i++)
-            {
-                int newRow = randomPosition.Next(0, battleFieldSize);
-                int newCol = randomPosition.Next(0, battleFieldSize);
-                if (battleField[newRow, newCol] == "-")
-                {
-                    battleField[newRow, newCol] = minesArray[randomPosition.Next(0, 5)];
-                }
-                else
-                {
-                    numberOfMines--;
-                }
-            }
-
-            return battleField;
-        }
-
-        private static string[,] HodNaIgracha(int row, int col, int n, string[,] battleField)
-        {
-            if (Convert.ToInt16(battleField[row, col]) >= 1)
-            {
-                if (row - 1 >= 0 && col - 1 >= 0)
-                {
-                    battleField[row - 1, col - 1] = "X";
-                }
-
-                if (row - 1 >= 0 && col < n - 1)
-                {
-                    battleField[row - 1, col + 1] = "X";
-                }
-
-                if (row < n - 1 && col - 1 > 0)
-                {
-                    battleField[row + 1, col - 1] = "X";
-                }
-
-                if (row < n - 1 && col < n - 1)
-                {
-                    battleField[row + 1, col + 1] = "X";
-                }
-
-                if (Convert.ToInt16(battleField[row, col]) >= 2)
-                {
-                    if (row - 1 >= 0)
-                    {
-                        battleField[row - 1, col] = "X";
-                    }
-
-                    if (col - 1 >= 0)
-                    {
-                        battleField[row, col - 1] = "X";
-                    }
-
-                    if (col < n - 1)
-                    {
-                        battleField[row, col + 1] = "X";
-                    }
-
-                    if (row < n - 1)
-                    {
-                        battleField[row + 1, col] = "X";
-                    }
-
-                    if (Convert.ToInt16(battleField[row, col]) >= 3)
-                    {
-                        if (row - 2 >= 0)
-                        {
-                            battleField[row - 2, col] = "X";
-                        }
-
-                        if (col - 2 >= 0)
-                        {
-                            battleField[row, col - 2] = "X";
-                        }
-
-                        if (col < n - 2)
-                        {
-                            battleField[row, col + 2] = "X";
-                        }
-
-                        if (row < n - 2)
-                        {
-                            battleField[row + 2, col] = "X";
-                        }
-
-                        if (Convert.ToInt16(battleField[row, col]) >= 4)
-                        {
-                            if (row - 2 >= 0 && col - 1 >= 0)
-                            {
-                                battleField[row - 2, col - 1] = "X";
-                            }
-
-                            if (row - 2 >= 0 && col < n - 1)
-                            {
-                                battleField[row - 2, col + 1] = "X";
-                            }
-
-                            if (row - 1 >= 0 && col - 2 >= 0)
-                            {
-                                battleField[row - 1, col - 2] = "X";
-                            }
-
-                            if (row - 1 >= 0 && col < n - 2)
-                            {
-                                battleField[row - 1, col + 2] = "X";
-                            }
-
-                            if (row < n - 1 && col - 2 >= 0)
-                            {
-                                battleField[row + 1, col - 2] = "X";
-                            }
-
-                            if (row < n - 1 && col < n - 2)
-                            {
-                                battleField[row + 1, col + 2] = "X";
-                            }
-
-                            if (row < n - 2 && col - 1 > 0)
-                            {
-                                battleField[row + 2, col - 1] = "X";
-                            }
-
-                            if (row < n - 2 && col < n - 1)
-                            {
-                                battleField[row + 2, col + 1] = "X";
-                            }
-
-                            if (Convert.ToInt16(battleField[row, col]) == 5)
-                            {
-                                if (row - 2 >= 0 && col - 2 >= 0)
-                                {
-                                    battleField[row - 2, col - 2] = "X";
-                                }
-
-                                if (row - 2 >= 0 && col < n - 2)
-                                {
-                                    battleField[row - 2, col + 2] = "X";
-                                }
-
-                                if (row < n - 2 && col - 2 > 0)
-                                {
-                                    battleField[row + 2, col - 2] = "X";
-                                }
-
-                                if (row < n - 2 && col < n - 2)
-                                {
-                                    battleField[row + 2, col + 2] = "X";
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            battleField[row, col] = "X";
-            return battleField;
-        }
-
-        private static void PrintField(string[,] battleField)
+        private static void PrintField()
         {
             Console.Write("   0  ");
             for (int i = 1; i < battleField.GetLength(0); i++)
@@ -282,6 +75,150 @@
 
                 Console.WriteLine();
             }
+        }
+
+        private static void InitializeField()
+        {
+            if (!int.TryParse(Console.ReadLine(), out battleFieldSize) ||
+                    battleFieldSize > 10 ||
+                    battleFieldSize < 1)
+            {
+                throw new ArgumentException("The battle field size must be an integer between 1 and 10.");
+            }
+
+            Random randomGenerator = new Random();
+            battleField = new string[battleFieldSize, battleFieldSize];
+
+            // filling the filed with dashes
+            for (int row = 0; row < battleFieldSize; row++)
+            {
+                for (int col = 0; col < battleFieldSize; col++)
+                {
+                    battleField[row, col] = "-";
+                }
+            }
+            
+            // setting the mines in the field
+            int minMines = Convert.ToInt32(0.15 * battleFieldSize * battleFieldSize);
+            int maxMines = Convert.ToInt32(0.3 * battleFieldSize * battleFieldSize);
+            int numberOfMines = randomGenerator.Next(minMines, maxMines + 1);
+            for (int i = 0; i < numberOfMines; i++)
+            {
+                int row = randomGenerator.Next(0, battleFieldSize);
+                int col = randomGenerator.Next(0, battleFieldSize);
+                if (battleField[row, col] == "-")
+                {
+                    battleField[row, col] = randomGenerator.Next(1, 6).ToString();
+                }
+                else
+                {
+                    numberOfMines--;
+                }
+            }
+        }
+
+        private static void ProcessMineDetonation(int row, int col)
+        {
+            int mineSize = int.Parse(battleField[row, col]);
+            MarkDetonatedCell(row, col);
+
+            if (mineSize >= 1)
+            {
+                MarkDetonatedCell(row - 1, col - 1);
+                MarkDetonatedCell(row - 1, col + 1);
+                MarkDetonatedCell(row + 1, col - 1);
+                MarkDetonatedCell(row + 1, col + 1);
+            }
+
+            if (mineSize >= 2)
+            {
+                MarkDetonatedCell(row - 1, col);
+                MarkDetonatedCell(row, col - 1);
+                MarkDetonatedCell(row + 1, col);
+                MarkDetonatedCell(row, col + 1);
+            }
+
+            if (mineSize >= 3)
+            {
+                MarkDetonatedCell(row - 2, col);
+                MarkDetonatedCell(row, col - 2);
+                MarkDetonatedCell(row + 2, col);
+                MarkDetonatedCell(row, col + 2);
+            }
+
+            if (mineSize >= 4)
+            {
+                MarkDetonatedCell(row - 2, col - 1);
+                MarkDetonatedCell(row - 2, col + 1);
+                MarkDetonatedCell(row - 1, col - 2);
+                MarkDetonatedCell(row - 1, col + 2);
+                MarkDetonatedCell(row + 2, col - 1);
+                MarkDetonatedCell(row + 2, col + 1);
+                MarkDetonatedCell(row + 1, col - 2);
+                MarkDetonatedCell(row + 1, col + 2);
+            }
+
+            if (mineSize >= 5)
+            {
+                MarkDetonatedCell(row - 2, col - 2);
+                MarkDetonatedCell(row - 2, col + 2);
+                MarkDetonatedCell(row + 2, col - 2);
+                MarkDetonatedCell(row + 2, col + 2);
+            }
+        }
+
+        private static void MarkDetonatedCell(int row, int col)
+        {
+            if (row >= 0 && 
+                row < battleField.GetLength(0) && 
+                col >= 0 &&
+                col < battleField.GetLength(1))
+            {
+                battleField[row, col] = "X";
+            }
+        }
+
+        private static int[] ProcessUserInput()
+        {
+            string input = Console.ReadLine();
+            if (input == null)
+            {
+                throw new ArgumentException("You must enter coordinates.");
+            }
+
+            int row;
+            int col;
+            string[] inputCoordinates = Regex.Split(input, "\\s+");
+            if (inputCoordinates.Length != 2 ||
+                !int.TryParse(inputCoordinates[0], out row) ||
+                !int.TryParse(inputCoordinates[1], out col))
+            {
+                throw new ArgumentException("You must enter at least two integer coordinates.");
+            }
+
+            if (row >= battleFieldSize || col >= battleFieldSize || row < 0 || col < 0)
+            {
+                throw new ArgumentException("The coordinate must be in the range of the field.");
+            }
+
+            return new[] { row, col };
+        }
+
+        private static int CountDetonatedFields()
+        {
+            int count = 0;
+            for (int row = 0; row < battleFieldSize; row++)
+            {
+                for (int col = 0; col < battleFieldSize; col++)
+                {
+                    if (battleField[row, col] == "-" || battleField[row, col] == "X")
+                    {
+                        count++;
+                    }
+                }
+            }
+
+            return count;
         }
     }
 }
