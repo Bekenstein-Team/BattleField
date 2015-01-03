@@ -8,8 +8,8 @@
     <ProjectGuid>{35870605-20E7-4668-A5A7-A3926E6D61CE}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BattleFiled</RootNamespace>
-    <AssemblyName>BattleFiled</AssemblyName>
+    <RootNamespace>BattleField</RootNamespace>
+    <AssemblyName>BattleField</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BattleField.cs" />
+    <Compile Include="BattleFieldGame.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

@@ -1,114 +1,131 @@
-﻿namespace BattleFiled
+﻿namespace BattleField
 {
     using System;
-    using System.Text.RegularExpressions;
+    using System.Text;
 
     public class BattleField
     {
-        private static int battleFieldSize;
-        private static string[,] battleField;
+        private static readonly Random RandomGenerator = new Random();
+        private int size;
 
-        public static void Main()
+        public BattleField(int size)
         {
-            Console.WriteLine("Welcome to the \"Battle Field\" game.");
-            Console.Write("Enter the size of the battle field between 1 and 10: ");
-            InitializeField();
+            this.Size = size;
+            this.DetonatedMinesCount = 0;
+            this.InitializeBoard();
+        }
 
-            Console.WriteLine();
-            PrintField();
-            Console.WriteLine();
-            int moveCounter = 0;
-
-            // main loop
-            while (true)
+        public int Size
+        {
+            get
             {
-                Console.Write("Please enter coordinates: ");
-                int[] userInput = ProcessUserInput();
-                int row = userInput[0];
-                int col = userInput[1];
+                return this.size;
+            }
 
-                // checking the selected field
-                if (battleField[row, col] == "-" || battleField[row, col] == "X")
+            set
+            {
+                if (value < 1 || value > 10)
                 {
-                    Console.WriteLine("Invalid move!");
-                }
-                else
-                {
-                    ProcessMineDetonation(row, col);
-                    moveCounter++;
+                    throw new ArgumentException("The battlefield size must be between 1 and 10.");    
                 }
 
-                PrintField();
-
-                // checking if there are more mines
-                if (CountDetonatedFields() >= battleFieldSize * battleFieldSize)
-                {
-                    Console.WriteLine("Game over. Detonated mines: {0}", moveCounter);
-                    break;
-                }
+                this.size = value;
             }
         }
 
-        private static void PrintField()
+        public bool AllMinesAreDetonated
         {
-            Console.Write("   0  ");
-            for (int i = 1; i < battleField.GetLength(0); i++)
+            get
             {
-                Console.Write("{0}  ", i);
-            }
-
-            Console.WriteLine();
-            Console.Write("   -");
-            for (int i = 0; i < battleField.GetLength(0); i++)
-            {
-                Console.Write("---");
-            }
-
-            Console.WriteLine();
-            for (int i = 0; i < battleField.GetLength(0); i++)
-            {
-                Console.Write("{0}|", i);
-                for (int j = 0; j < battleField.GetLength(1); j++)
+                for (int row = 0; row < this.Size; row++)
                 {
-                    Console.Write(" {0} ", battleField[i, j]);
+                    for (int col = 0; col < this.Size; col++)
+                    {
+                        if (this.Board[row, col] != "-" && this.Board[row, col] != "X")
+                        {
+                            return false;
+                        }
+                    }
                 }
 
-                Console.WriteLine();
+                return true;
             }
         }
 
-        private static void InitializeField()
+        public string[,] Board { get; private set; }
+
+        public int DetonatedMinesCount { get; private set; }
+
+        public void ProccessMove(int row, int col)
         {
-            if (!int.TryParse(Console.ReadLine(), out battleFieldSize) ||
-                    battleFieldSize > 10 ||
-                    battleFieldSize < 1)
+            if (row >= this.Size || col >= this.Size || row < 0 || col < 0)
             {
-                throw new ArgumentException("The battle field size must be an integer between 1 and 10.");
+                throw new ArgumentException("The coordinates must be within the board.");
             }
 
-            Random randomGenerator = new Random();
-            battleField = new string[battleFieldSize, battleFieldSize];
-
-            // filling the filed with dashes
-            for (int row = 0; row < battleFieldSize; row++)
+            if (this.Board[row, col] == "-" || this.Board[row, col] == "X")
             {
-                for (int col = 0; col < battleFieldSize; col++)
+                throw new ArgumentException("There is no mine on that field.");
+            }
+
+            this.ProcessMineDetonation(row, col);
+        }
+        
+        public override string ToString()
+        {
+            StringBuilder result = new StringBuilder();
+            result.Append("   0  ");
+            for (int i = 1; i < this.Size; i++)
+            {
+                result.AppendFormat("{0}  ", i);
+            }
+
+            result.AppendLine();
+            result.Append("   -");
+            for (int i = 0; i < this.Size; i++)
+            {
+                result.Append("---");
+            }
+
+            result.AppendLine();
+            for (int i = 0; i < this.Size; i++)
+            {
+                result.AppendFormat("{0}|", i);
+                for (int j = 0; j < this.Size; j++)
                 {
-                    battleField[row, col] = "-";
+                    result.AppendFormat(" {0} ", this.Board[i, j]);
+                }
+
+                result.AppendLine();
+            }
+
+            return result.ToString();
+        }
+
+        private void InitializeBoard()
+        {
+            this.Board = new string[this.Size, this.Size];
+
+            // filling the board with dashes
+            for (int row = 0; row < this.Size; row++)
+            {
+                for (int col = 0; col < this.Size; col++)
+                {
+                    this.Board[row, col] = "-";
                 }
             }
-            
-            // setting the mines in the field
-            int minMines = Convert.ToInt32(0.15 * battleFieldSize * battleFieldSize);
-            int maxMines = Convert.ToInt32(0.3 * battleFieldSize * battleFieldSize);
-            int numberOfMines = randomGenerator.Next(minMines, maxMines + 1);
+
+            // setting the mines
+            int minMines = Convert.ToInt32(0.15 * this.Size * this.Size);
+            int maxMines = Convert.ToInt32(0.3 * this.Size * this.Size);
+            int numberOfMines = RandomGenerator.Next(minMines, maxMines + 1);
             for (int i = 0; i < numberOfMines; i++)
             {
-                int row = randomGenerator.Next(0, battleFieldSize);
-                int col = randomGenerator.Next(0, battleFieldSize);
-                if (battleField[row, col] == "-")
+                int row = RandomGenerator.Next(0, this.Size);
+                int col = RandomGenerator.Next(0, this.Size);
+                if (this.Board[row, col] == "-")
                 {
-                    battleField[row, col] = randomGenerator.Next(1, 6).ToString();
+                    this.Board[row, col] = RandomGenerator.Next(1, 6).ToString();
                 }
                 else
                 {
@@ -117,108 +134,63 @@
             }
         }
 
-        private static void ProcessMineDetonation(int row, int col)
+        private void ProcessMineDetonation(int row, int col)
         {
-            int mineSize = int.Parse(battleField[row, col]);
-            MarkDetonatedCell(row, col);
+            this.DetonatedMinesCount++;
+            int mineSize = int.Parse(this.Board[row, col]);
+            this.MarkDetonatedCell(row, col);
 
             if (mineSize >= 1)
             {
-                MarkDetonatedCell(row - 1, col - 1);
-                MarkDetonatedCell(row - 1, col + 1);
-                MarkDetonatedCell(row + 1, col - 1);
-                MarkDetonatedCell(row + 1, col + 1);
+                this.MarkDetonatedCell(row - 1, col - 1);
+                this.MarkDetonatedCell(row - 1, col + 1);
+                this.MarkDetonatedCell(row + 1, col - 1);
+                this.MarkDetonatedCell(row + 1, col + 1);
             }
 
             if (mineSize >= 2)
             {
-                MarkDetonatedCell(row - 1, col);
-                MarkDetonatedCell(row, col - 1);
-                MarkDetonatedCell(row + 1, col);
-                MarkDetonatedCell(row, col + 1);
+                this.MarkDetonatedCell(row - 1, col);
+                this.MarkDetonatedCell(row, col - 1);
+                this.MarkDetonatedCell(row + 1, col);
+                this.MarkDetonatedCell(row, col + 1);
             }
 
             if (mineSize >= 3)
             {
-                MarkDetonatedCell(row - 2, col);
-                MarkDetonatedCell(row, col - 2);
-                MarkDetonatedCell(row + 2, col);
-                MarkDetonatedCell(row, col + 2);
+                this.MarkDetonatedCell(row - 2, col);
+                this.MarkDetonatedCell(row, col - 2);
+                this.MarkDetonatedCell(row + 2, col);
+                this.MarkDetonatedCell(row, col + 2);
             }
 
             if (mineSize >= 4)
             {
-                MarkDetonatedCell(row - 2, col - 1);
-                MarkDetonatedCell(row - 2, col + 1);
-                MarkDetonatedCell(row - 1, col - 2);
-                MarkDetonatedCell(row - 1, col + 2);
-                MarkDetonatedCell(row + 2, col - 1);
-                MarkDetonatedCell(row + 2, col + 1);
-                MarkDetonatedCell(row + 1, col - 2);
-                MarkDetonatedCell(row + 1, col + 2);
+                this.MarkDetonatedCell(row - 2, col - 1);
+                this.MarkDetonatedCell(row - 2, col + 1);
+                this.MarkDetonatedCell(row - 1, col - 2);
+                this.MarkDetonatedCell(row - 1, col + 2);
+                this.MarkDetonatedCell(row + 2, col - 1);
+                this.MarkDetonatedCell(row + 2, col + 1);
+                this.MarkDetonatedCell(row + 1, col - 2);
+                this.MarkDetonatedCell(row + 1, col + 2);
             }
 
             if (mineSize >= 5)
             {
-                MarkDetonatedCell(row - 2, col - 2);
-                MarkDetonatedCell(row - 2, col + 2);
-                MarkDetonatedCell(row + 2, col - 2);
-                MarkDetonatedCell(row + 2, col + 2);
+                this.MarkDetonatedCell(row - 2, col - 2);
+                this.MarkDetonatedCell(row - 2, col + 2);
+                this.MarkDetonatedCell(row + 2, col - 2);
+                this.MarkDetonatedCell(row + 2, col + 2);
             }
         }
 
-        private static void MarkDetonatedCell(int row, int col)
+        private void MarkDetonatedCell(int row, int col)
         {
-            if (row >= 0 && 
-                row < battleField.GetLength(0) && 
-                col >= 0 &&
-                col < battleField.GetLength(1))
+            if (row >= 0 && row < this.Size && col >= 0 && col < this.Size)
             {
-                battleField[row, col] = "X";
+                this.Board[row, col] = "X";
             }
-        }
-
-        private static int[] ProcessUserInput()
-        {
-            string input = Console.ReadLine();
-            if (input == null)
-            {
-                throw new ArgumentException("You must enter coordinates.");
-            }
-
-            int row;
-            int col;
-            string[] inputCoordinates = Regex.Split(input, "\\s+");
-            if (inputCoordinates.Length != 2 ||
-                !int.TryParse(inputCoordinates[0], out row) ||
-                !int.TryParse(inputCoordinates[1], out col))
-            {
-                throw new ArgumentException("You must enter at least two integer coordinates.");
-            }
-
-            if (row >= battleFieldSize || col >= battleFieldSize || row < 0 || col < 0)
-            {
-                throw new ArgumentException("The coordinate must be in the range of the field.");
-            }
-
-            return new[] { row, col };
-        }
-
-        private static int CountDetonatedFields()
-        {
-            int count = 0;
-            for (int row = 0; row < battleFieldSize; row++)
-            {
-                for (int col = 0; col < battleFieldSize; col++)
-                {
-                    if (battleField[row, col] == "-" || battleField[row, col] == "X")
-                    {
-                        count++;
-                    }
-                }
-            }
-
-            return count;
         }
     }
 }
