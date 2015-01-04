@@ -3,21 +3,23 @@
     using System;
     using System.Text;
 
-    public class BattleField
+    public class BattleField 
     {
         private const int MinBattleFieldSize = 2;
         private const int MaxBattleFieldSize = 10;
         private const string EmptyFieldSymbol = "-";
         private const string DetonatedMineSymbol = "X";
 
-        private readonly Random randomGenerator;
+        private readonly Random randomGenerator = new Random();
+        private readonly IBoardInitializable boardInitializrer;
         private int size;
 
-        public BattleField(int size, Random randomGenerator = null)
+
+        public BattleField(int size, IBoardInitializable boardInitializrer)
         {
             this.Size = size;
+            this.boardInitializrer = boardInitializrer;
             this.DetonatedMinesCount = 0;
-            this.randomGenerator = randomGenerator ?? new Random();
             this.InitializeBoard();
         }
 
@@ -114,34 +116,9 @@
             return result.ToString();
         }
 
-        private void InitializeBoard()
+        public void InitializeBoard()
         {
-            this.Board = new string[this.Size, this.Size];
-
-            for (int row = 0; row < this.Size; row++)
-            {
-                for (int col = 0; col < this.Size; col++)
-                {
-                    this.Board[row, col] = EmptyFieldSymbol;
-                }
-            }
-
-            int minMines = Convert.ToInt32(0.15 * this.Size * this.Size);
-            int maxMines = Convert.ToInt32(0.3 * this.Size * this.Size);
-            int numberOfMines = this.randomGenerator.Next(minMines, maxMines + 1);
-            for (int i = 0; i < numberOfMines; i++)
-            {
-                int row = this.randomGenerator.Next(0, this.Size);
-                int col = this.randomGenerator.Next(0, this.Size);
-                if (this.Board[row, col] == EmptyFieldSymbol)
-                {
-                    this.Board[row, col] = this.randomGenerator.Next(1, 6).ToString();
-                }
-                else
-                {
-                    numberOfMines--;
-                }
-            }
+            this.Board = this.boardInitializrer.InitializeBoard(this.Size, BattleField.EmptyFieldSymbol);
         }
 
         private void ProcessMineDetonation(int row, int col)

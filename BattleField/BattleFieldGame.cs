@@ -15,7 +15,7 @@
                 throw new ArgumentException("You must enter a valid integer.");
             }
 
-            var battleField = new BattleField(battleFieldSize);
+            var battleField = new BattleField(battleFieldSize, new BoardInitializer());
             Console.WriteLine(battleField);
             while (battleField.RemainingMines > 0)
             {

@@ -45,6 +45,8 @@
   <ItemGroup>
     <Compile Include="BattleField.cs" />
     <Compile Include="BattleFieldGame.cs" />
+    <Compile Include="BoardInitializer.cs" />
+    <Compile Include="IBoardInitializable.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
