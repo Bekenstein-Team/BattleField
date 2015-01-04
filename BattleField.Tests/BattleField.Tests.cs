@@ -7,7 +7,6 @@
     public class BattleFieldTests
     {
         [TestMethod]
-
         [ExpectedException(typeof(ArgumentOutOfRangeException), "Should not create battle field with size smaller than 1.", AllowDerivedTypes = true)]
         public void TestBattleFieldSizeWiht0ShouldReturnArgementOutOfRange()
         {
@@ -16,7 +15,6 @@
         }
 
         [TestMethod]
-
         [ExpectedException(typeof(ArgumentOutOfRangeException), "Should not create battle field with size smaller than 1.", AllowDerivedTypes = true)]
         public void TestBattleFieldSizeWihtNegativeValueShouldReturnArgementOutOfRange()
         {
@@ -25,7 +23,6 @@
         }
 
         [TestMethod]
-
         [ExpectedException(typeof(ArgumentOutOfRangeException), "Should not create battle field with size bigger than 10.", AllowDerivedTypes = true)]
         public void TestBattleFieldSizeWiht11ShouldReturnArgementOutOfRange()
         {
@@ -41,17 +38,17 @@
         }
 
         [TestMethod]
-        public void TestDetonatedMinesCountAtStarShouldReturn0()
+        public void TestDetonatedMinesCountAtStartShouldReturn0()
         {
             var validBattleFieldSize = new BattleField(2);
             Assert.AreEqual(validBattleFieldSize.DetonatedMinesCount, 0, "Incorect Detonated mines count. It should be 0 at start.");
         }
 
         [TestMethod]
-        public void TestAllMinesAreDetonatedAtStarShouldReturnFalse()
+        public void TestAllMinesAreDetonatedAtStartShouldReturnFalse()
         {
             var validBattleField = new BattleField(7);
-            Assert.IsFalse(validBattleField.AllMinesAreDetonated, "All mines should not be detonated at start.");
+            Assert.AreNotEqual(validBattleField.RemainingMines, 0, "All mines should not be detonated at start.");
         }
 
         [TestMethod]

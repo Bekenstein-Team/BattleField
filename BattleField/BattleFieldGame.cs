@@ -17,7 +17,7 @@
 
             var battleField = new BattleField(battleFieldSize);
             Console.WriteLine(battleField);
-            while (true)
+            while (battleField.RemainingMines > 0)
             {
                 Console.Write("Please enter coordinates: ");
                 string input = Console.ReadLine();
@@ -45,12 +45,9 @@
                 }
 
                 Console.WriteLine(battleField);
-                if (battleField.AllMinesAreDetonated)
-                {
-                    Console.WriteLine("Game over. Detonated mines: {0}", battleField.DetonatedMinesCount);
-                    break;
-                }
             }
+
+            Console.WriteLine("Game over. Detonated mines: {0}", battleField.DetonatedMinesCount);
         }
     }
 }

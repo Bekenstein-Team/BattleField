@@ -5,7 +5,12 @@
 
     public class BattleField
     {
+        private const int MinBattleFieldSize = 1;
+        private const int MaxBattleFieldSize = 10;
+        private const string EmptyFieldSymbol = "-";
+        private const string DetonatedMineSymbol = "X";
         private static readonly Random RandomGenerator = new Random();
+
         private int size;
 
         public BattleField(int size)
@@ -24,7 +29,7 @@
 
             set
             {
-                if (value < 1 || value > 10)
+                if (value < MinBattleFieldSize || value > MaxBattleFieldSize)
                 {
                     throw new ArgumentOutOfRangeException("value", value, "The battlefield size must be between 1 and 10.");
                 }
@@ -33,22 +38,23 @@
             }
         }
 
-        public bool AllMinesAreDetonated
+        public int RemainingMines
         {
             get
             {
+                int mines = 0;
                 for (int row = 0; row < this.Size; row++)
                 {
                     for (int col = 0; col < this.Size; col++)
                     {
-                        if (this.Board[row, col] != "-" && this.Board[row, col] != "X")
+                        if (this.Board[row, col] != EmptyFieldSymbol && this.Board[row, col] != DetonatedMineSymbol)
                         {
-                            return false;
+                            mines++;
                         }
                     }
                 }
 
-                return true;
+                return mines;
             }
         }
 
@@ -68,7 +74,7 @@
                 throw new ArgumentOutOfRangeException("col", col, "Ivalid value for column. The coordinates must be within the board.");
             }
 
-            if (this.Board[row, col] == "-" || this.Board[row, col] == "X")
+            if (this.Board[row, col] == EmptyFieldSymbol || this.Board[row, col] == DetonatedMineSymbol)
             {
                 throw new ArgumentException("There is no mine on that field.");
             }
@@ -111,16 +117,14 @@
         {
             this.Board = new string[this.Size, this.Size];
 
-            // filling the board with dashes
             for (int row = 0; row < this.Size; row++)
             {
                 for (int col = 0; col < this.Size; col++)
                 {
-                    this.Board[row, col] = "-";
+                    this.Board[row, col] = EmptyFieldSymbol;
                 }
             }
 
-            // setting the mines
             int minMines = Convert.ToInt32(0.15 * this.Size * this.Size);
             int maxMines = Convert.ToInt32(0.3 * this.Size * this.Size);
             int numberOfMines = RandomGenerator.Next(minMines, maxMines + 1);
@@ -128,7 +132,7 @@
             {
                 int row = RandomGenerator.Next(0, this.Size);
                 int col = RandomGenerator.Next(0, this.Size);
-                if (this.Board[row, col] == "-")
+                if (this.Board[row, col] == EmptyFieldSymbol)
                 {
                     this.Board[row, col] = RandomGenerator.Next(1, 6).ToString();
                 }
@@ -194,7 +198,7 @@
         {
             if (row >= 0 && row < this.Size && col >= 0 && col < this.Size)
             {
-                this.Board[row, col] = "X";
+                this.Board[row, col] = DetonatedMineSymbol;
             }
         }
     }
