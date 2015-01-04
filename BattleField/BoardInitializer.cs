@@ -1,10 +1,6 @@
-﻿
-namespace BattleField
+﻿namespace BattleField
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
 
     public class BoardInitializer : IBoardInitializable
     {
@@ -13,7 +9,6 @@ namespace BattleField
         public string[,] InitializeBoard(int size, string emptyFieldSymbol)
         {
             var board = new string[size, size];
-
             for (int row = 0; row < size; row++)
             {
                 for (int col = 0; col < size; col++)
@@ -41,6 +36,5 @@ namespace BattleField
 
             return board;
         }
-
     }
 }

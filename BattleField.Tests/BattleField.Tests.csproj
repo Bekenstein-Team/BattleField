@@ -53,7 +53,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="BattleField.Tests.cs" />
-    <Compile Include="Mock\BoardInitialezerMock.cs" />
+    <Compile Include="Mocks\BoardInitialezerMock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

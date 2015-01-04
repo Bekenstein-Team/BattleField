@@ -10,17 +10,13 @@
         private const string EmptyFieldSymbol = "-";
         private const string DetonatedMineSymbol = "X";
 
-        private readonly Random randomGenerator = new Random();
-        private readonly IBoardInitializable boardInitializrer;
         private int size;
 
-
-        public BattleField(int size, IBoardInitializable boardInitializrer)
+        public BattleField(int size, IBoardInitializable boardInitializer)
         {
             this.Size = size;
-            this.boardInitializrer = boardInitializrer;
+            this.Board = boardInitializer.InitializeBoard(this.Size, EmptyFieldSymbol);
             this.DetonatedMinesCount = 0;
-            this.InitializeBoard();
         }
 
         public int Size
@@ -114,11 +110,6 @@
             }
 
             return result.ToString();
-        }
-
-        public void InitializeBoard()
-        {
-            this.Board = this.boardInitializrer.InitializeBoard(this.Size, BattleField.EmptyFieldSymbol);
         }
 
         private void ProcessMineDetonation(int row, int col)
