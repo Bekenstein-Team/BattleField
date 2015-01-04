@@ -26,7 +26,7 @@
             {
                 if (value < 1 || value > 10)
                 {
-                    throw new ArgumentException("The battlefield size must be between 1 and 10.");    
+                    throw new ArgumentOutOfRangeException("value", value, "The battlefield size must be between 1 and 10.");
                 }
 
                 this.size = value;
@@ -58,9 +58,14 @@
 
         public void ProccessMove(int row, int col)
         {
-            if (row >= this.Size || col >= this.Size || row < 0 || col < 0)
+            if (row >= this.Size || row < 0)
             {
-                throw new ArgumentException("The coordinates must be within the board.");
+                throw new ArgumentOutOfRangeException("row", row, "Ivalid value for row. The coordinates must be within the board.");
+            }
+
+            if (col >= this.Size || col < 0)
+            {
+                throw new ArgumentOutOfRangeException("col", col, "Ivalid value for column. The coordinates must be within the board.");
             }
 
             if (this.Board[row, col] == "-" || this.Board[row, col] == "X")
@@ -70,10 +75,10 @@
 
             this.ProcessMineDetonation(row, col);
         }
-        
+
         public override string ToString()
         {
-            StringBuilder result = new StringBuilder();
+            var result = new StringBuilder();
             result.Append("   0  ");
             for (int i = 1; i < this.Size; i++)
             {
