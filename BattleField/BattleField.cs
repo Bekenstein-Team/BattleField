@@ -5,18 +5,19 @@
 
     public class BattleField
     {
-        private const int MinBattleFieldSize = 1;
+        private const int MinBattleFieldSize = 2;
         private const int MaxBattleFieldSize = 10;
         private const string EmptyFieldSymbol = "-";
         private const string DetonatedMineSymbol = "X";
-        private static readonly Random RandomGenerator = new Random();
 
+        private readonly Random randomGenerator;
         private int size;
 
-        public BattleField(int size)
+        public BattleField(int size, Random randomGenerator = null)
         {
             this.Size = size;
             this.DetonatedMinesCount = 0;
+            this.randomGenerator = randomGenerator ?? new Random();
             this.InitializeBoard();
         }
 
@@ -127,14 +128,14 @@
 
             int minMines = Convert.ToInt32(0.15 * this.Size * this.Size);
             int maxMines = Convert.ToInt32(0.3 * this.Size * this.Size);
-            int numberOfMines = RandomGenerator.Next(minMines, maxMines + 1);
+            int numberOfMines = this.randomGenerator.Next(minMines, maxMines + 1);
             for (int i = 0; i < numberOfMines; i++)
             {
-                int row = RandomGenerator.Next(0, this.Size);
-                int col = RandomGenerator.Next(0, this.Size);
+                int row = this.randomGenerator.Next(0, this.Size);
+                int col = this.randomGenerator.Next(0, this.Size);
                 if (this.Board[row, col] == EmptyFieldSymbol)
                 {
-                    this.Board[row, col] = RandomGenerator.Next(1, 6).ToString();
+                    this.Board[row, col] = this.randomGenerator.Next(1, 6).ToString();
                 }
                 else
                 {
