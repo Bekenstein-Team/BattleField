@@ -1,6 +1,7 @@
 *.suo
 *.[Cc]lass
 *.[Cc]ache
+*.[Uu]ser
 
 [Bb]in/
 [Oo]bj/
