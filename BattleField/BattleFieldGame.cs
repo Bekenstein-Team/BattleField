@@ -16,21 +16,25 @@
 
             while (battleField.RemainingMines > 0)
             {
-                Console.Write("Please enter coordinates with space between: ");
-                string input = Console.ReadLine();
-                if (input == null)
+                Console.Write("Please enter coordinates X and Y with space between: ");
+                string input;
+                int row = 0;
+                int col = 0;
+                bool isValidCoordinates;
+                do
                 {
-                    Console.WriteLine("You must enter coordinates.");
-                }
+                    input = Console.ReadLine();
+                    string[] inputCoordinates = Regex.Split(input, "\\s+");
 
-                int row, col;
-                string[] inputCoordinates = Regex.Split(input, "\\s+");
-                if (inputCoordinates.Length != 2 ||
-                    !int.TryParse(inputCoordinates[0], out row) ||
-                    !int.TryParse(inputCoordinates[1], out col))
-                {
-                    throw new ArgumentException("You must enter at least two integer coordinates.");
-                }
+                    if (inputCoordinates.Length != 2 ||
+                        !int.TryParse(inputCoordinates[0], out row) ||
+                        !int.TryParse(inputCoordinates[1], out col))
+                    {
+                        Console.WriteLine("You must enter two integer numbers.");
+                    }
+                    isValidCoordinates = row < battleFieldSize && row > 0 &&
+                                        col < battleFieldSize && col > 0;
+                } while (false || (!isValidCoordinates));
 
                 try
                 {
@@ -50,6 +54,7 @@
         private static int ReadBattleFieldSize()
         {
             Console.Write("Please enter the size of the battle field between 2 and 10: ");
+
             string input = Console.ReadLine();
             int size;
             while (!int.TryParse(input, out size) || size < 2 || size > 10)

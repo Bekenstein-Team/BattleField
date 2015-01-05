@@ -154,7 +154,7 @@
                 this.MarkDetonatedCell(row + 1, col + 2);
             }
 
-            if (mineSize >= 5)
+            if (mineSize == 5)
             {
                 this.MarkDetonatedCell(row - 2, col - 2);
                 this.MarkDetonatedCell(row - 2, col + 2);
