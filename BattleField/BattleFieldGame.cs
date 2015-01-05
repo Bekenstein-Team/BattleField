@@ -47,7 +47,7 @@
 
         private static int ReadBattleFieldSize()
         {
-            Console.Write("Pleace enter the size of the battle field between 2 and 10: ");
+            Console.Write("Please enter the size of the battle field between 2 and 10: ");
             string input = Console.ReadLine();
             int size;
             while (!(Int32.TryParse(input, out size)) || size < 2 || size > 10)
