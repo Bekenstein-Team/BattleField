@@ -65,12 +65,12 @@
         {
             if (row >= this.Size || row < 0)
             {
-                throw new ArgumentOutOfRangeException("row", row, "Ivalid value for row. The coordinates must be within the board.");
+                throw new ArgumentOutOfRangeException("row", row, "Invalid value for row. The coordinates must be within the board.");
             }
 
             if (col >= this.Size || col < 0)
             {
-                throw new ArgumentOutOfRangeException("col", col, "Ivalid value for column. The coordinates must be within the board.");
+                throw new ArgumentOutOfRangeException("col", col, "Invalid value for column. The coordinates must be within the board.");
             }
 
             if (this.Board[row, col] == EmptyFieldSymbol || this.Board[row, col] == DetonatedMineSymbol)
