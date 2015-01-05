@@ -8,17 +8,19 @@
         public static void Main()
         {
             Console.WriteLine("Welcome to the \"Battle Field\" game.");
+
             int battleFieldSize = ReadBattleFieldSize();
+
             var battleField = new BattleField(battleFieldSize, new BoardInitializer());
             Console.WriteLine(battleField);
 
             while (battleField.RemainingMines > 0)
             {
-                Console.Write("Please enter coordinates: ");
+                Console.Write("Please enter coordinates with space between: ");
                 string input = Console.ReadLine();
                 if (input == null)
                 {
-                    throw new ArgumentException("You must enter coordinates.");
+                    Console.WriteLine("You must enter coordinates.");
                 }
 
                 int row, col;
