@@ -8,12 +8,11 @@
         public static void Main()
         {
             Console.WriteLine("Welcome to the \"Battle Field\" game.");
-            Console.Write("Enter the size of the battle field between 1 and 10: ");
+            Console.Write("Enter the size of the battle field between 1 and 10. ");
+
             int battleFieldSize;
-            if (!int.TryParse(Console.ReadLine(), out battleFieldSize))
-            {
-                throw new ArgumentException("You must enter a valid integer.");
-            }
+
+            battleFieldSize = ReadCellsNumber();
 
             var battleField = new BattleField(battleFieldSize, new BoardInitializer());
             Console.WriteLine(battleField);
@@ -49,5 +48,32 @@
 
             Console.WriteLine("Game over. Detonated mines: {0}", battleField.DetonatedMinesCount);
         }
+        public static int ReadCellsNumber()
+        {
+            string readThings;
+            int readNumber;
+            do
+            {
+                Console.Write("You must enter a valid integer = ");
+                readThings = Console.ReadLine();
+
+                if (!(Int32.TryParse(
+                    readThings, out readNumber)))
+                {
+                    readNumber = -1;
+                }
+            }
+            while (!(sizeChecker(readNumber)));
+
+            return readNumber;
+        }
+        public static bool sizeChecker(int inputNumber)
+        {
+            if ((inputNumber < 1) || (inputNumber > 10))
+                return false;
+            else
+                return true;
+        }
     }
+
 }

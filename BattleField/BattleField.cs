@@ -28,7 +28,8 @@
 
             set
             {
-                if (value < MinBattleFieldSize || value > MaxBattleFieldSize)
+                if (value < MinBattleFieldSize || 
+                    value > MaxBattleFieldSize)
                 {
                     throw new ArgumentOutOfRangeException("value", value, "The battlefield size must be between 1 and 10.");
                 }
@@ -46,7 +47,8 @@
                 {
                     for (int col = 0; col < this.Size; col++)
                     {
-                        if (this.Board[row, col] != EmptyFieldSymbol && this.Board[row, col] != DetonatedMineSymbol)
+                        if (this.Board[row, col] != EmptyFieldSymbol && 
+                            this.Board[row, col] != DetonatedMineSymbol)
                         {
                             mines++;
                         }
@@ -73,7 +75,8 @@
                 throw new ArgumentOutOfRangeException("col", col, "Invalid value for column. The coordinates must be within the board.");
             }
 
-            if (this.Board[row, col] == EmptyFieldSymbol || this.Board[row, col] == DetonatedMineSymbol)
+            if (this.Board[row, col] == EmptyFieldSymbol || 
+                this.Board[row, col] == DetonatedMineSymbol)
             {
                 throw new ArgumentException("There is no mine on that field.");
             }
