@@ -8,14 +8,10 @@
         public static void Main()
         {
             Console.WriteLine("Welcome to the \"Battle Field\" game.");
-            Console.Write("Enter the size of the battle field between 1 and 10. ");
-
-            int battleFieldSize;
-
-            battleFieldSize = ReadCellsNumber();
-
+            int battleFieldSize = ReadBattleFieldSize();
             var battleField = new BattleField(battleFieldSize, new BoardInitializer());
             Console.WriteLine(battleField);
+
             while (battleField.RemainingMines > 0)
             {
                 Console.Write("Please enter coordinates: ");
@@ -48,31 +44,19 @@
 
             Console.WriteLine("Game over. Detonated mines: {0}", battleField.DetonatedMinesCount);
         }
-        public static int ReadCellsNumber()
+
+        private static int ReadBattleFieldSize()
         {
-            string readThings;
-            int readNumber;
-            do
+            Console.Write("Pleace enter the size of the battle field between 2 and 10: ");
+            string input = Console.ReadLine();
+            int size;
+            while (!(Int32.TryParse(input, out size)) || size < 2 || size > 10)
             {
-                Console.Write("You must enter a valid integer = ");
-                readThings = Console.ReadLine();
-
-                if (!(Int32.TryParse(
-                    readThings, out readNumber)))
-                {
-                    readNumber = -1;
-                }
+                Console.Write("You must enter a valid integer between 2 and 10: ");
+                input = Console.ReadLine();
             }
-            while (!(sizeChecker(readNumber)));
 
-            return readNumber;
-        }
-        public static bool sizeChecker(int inputNumber)
-        {
-            if ((inputNumber < 1) || (inputNumber > 10))
-                return false;
-            else
-                return true;
+            return size;
         }
     }
 

@@ -9,7 +9,6 @@
         public string[,] InitializeBoard(int size, string emptyFieldSymbol)
         {
             var board = new string[size, size];
-            
             for (int row = 0; row < size; row++)
             {
                 for (int col = 0; col < size; col++)
@@ -25,7 +24,6 @@
             {
                 int row = this.randomGenerator.Next(0, size);
                 int col = this.randomGenerator.Next(0, size);
-                
                 if (board[row, col] == emptyFieldSymbol)
                 {
                     board[row, col] = this.randomGenerator.Next(1, 6).ToString();
