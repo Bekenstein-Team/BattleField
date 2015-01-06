@@ -35,14 +35,14 @@
         public void TestBattleFieldWithCorrectSize()
         {
             var battleField = new BattleField(5, this.bordInitializerActual);
-            Assert.AreEqual(battleField.Size, 5, "Incorect battlefield size.");
+            Assert.AreEqual(battleField.Size, 5, "Incorrect battlefield size.");
         }
 
         [TestMethod]
         public void TestDetonatedMinesCountAtStart()
         {
             var battleField = new BattleField(2, this.bordInitializerActual);
-            Assert.AreEqual(battleField.DetonatedMinesCount, 0, "Incorect detonated mines count. It should be 0 at start.");
+            Assert.AreEqual(battleField.DetonatedMinesCount, 0, "Incorrect detonated mines count. It should be 0 at start.");
         }
 
         [TestMethod]
@@ -295,5 +295,6 @@
 
             CollectionAssert.AreEquivalent(expectedBoard, battleField.Board, "Incorrect board after move on field with a mine with size 5.");
         }
+
     }
 }

@@ -55,7 +55,7 @@
             } while (false || (!isValidCoordinates));
         }
 
-        private static int ReadBattleFieldSize()
+        public static int ReadBattleFieldSize()
         {
             Console.Write("Please enter the size of the battle field between 2 and 10: ");
             string input = Console.ReadLine();
