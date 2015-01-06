@@ -61,10 +61,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BattleField.cs" />
+    <Compile Include="Models\BattleField.cs" />
     <Compile Include="BattleFieldGame.cs" />
-    <Compile Include="BoardInitializer.cs" />
-    <Compile Include="IBoardInitializable.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Utils\BoardInitializer.cs" />
+    <Compile Include="Interfaces\IBoardInitializable.cs" />
+    <Compile Include="Utils\Coordinates.cs" />
+    <Compile Include="Utils\InputOutputHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

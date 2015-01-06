@@ -1,8 +1,11 @@
 ﻿namespace BattleField.Tests
 {
     using System;
+    using Interfaces;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Mocks;
+    using Models;
+    using Utils;
 
     [TestClass]
     public class BattleFieldTests
@@ -35,7 +38,7 @@
         public void TestBattleFieldWithCorrectSize()
         {
             var battleField = new BattleField(5, this.bordInitializerActual);
-            Assert.AreEqual(battleField.Size, 5, "Incorrect battlefield size.");
+            Assert.AreEqual(battleField.BoardSize, 5, "Incorrect battlefield size.");
         }
 
         [TestMethod]
@@ -295,6 +298,5 @@
 
             CollectionAssert.AreEquivalent(expectedBoard, battleField.Board, "Incorrect board after move on field with a mine with size 5.");
         }
-
     }
 }

@@ -1,5 +1,7 @@
 ﻿namespace BattleField.Tests.Mocks
 {
+    using Interfaces;
+
     public class BoardInitialezerMock : IBoardInitializable
     {
         public string[,] InitializeBoard(int size, string emptyFieldSymbol)
