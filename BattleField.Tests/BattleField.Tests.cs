@@ -298,5 +298,33 @@
 
             CollectionAssert.AreEquivalent(expectedBoard, battleField.Board, "Incorrect board after move on field with a mine with size 5.");
         }
+
+        [TestMethod]
+        public void TestCoordinatesAreValidInvalidRow()
+        {
+            var battleField = new BattleField(10, this.bordInitializerMocked);
+            Assert.IsFalse(battleField.CoordinatesAreValid(-8, 4));
+        }
+
+        [TestMethod]
+        public void TestCoordinatesAreValidInvalidCol()
+        {
+            var battleField = new BattleField(10, this.bordInitializerMocked);
+            Assert.IsFalse(battleField.CoordinatesAreValid(2, -5));
+        }
+
+        [TestMethod]
+        public void TestCoordinatesAreValidTrue()
+        {
+            var battleField = new BattleField(10, this.bordInitializerMocked);
+            Assert.IsTrue(battleField.CoordinatesAreValid(2, 1));
+        }
+
+        [TestMethod]
+        public void TestCoordinatesAreValidEmptyField()
+        {
+            var battleField = new BattleField(10, this.bordInitializerMocked);
+            Assert.IsFalse(battleField.CoordinatesAreValid(8, 4));
+        }
     }
 }
