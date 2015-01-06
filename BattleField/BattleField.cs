@@ -5,17 +5,17 @@
 
     public class BattleField 
     {
-        private const int MinBattleFieldSize = 2;
-        private const int MaxBattleFieldSize = 10;
-        private const string EmptyFieldSymbol = "-";
-        private const string DetonatedMineSymbol = "X";
+        private const int MIN_BATTLEFIELD_SIZE = 2;
+        private const int MAX_BATTLEFIELD_SIZE = 10;
+        private const string EMPTY_FIELD_SYMBOL = "-";
+        private const string DETONATED_MINE_SYMBOL = "X";
 
-        private int size;
+        private int _size;
 
         public BattleField(int size, IBoardInitializable boardInitializer)
         {
             this.Size = size;
-            this.Board = boardInitializer.InitializeBoard(this.Size, EmptyFieldSymbol);
+            this.Board = boardInitializer.InitializeBoard(this.Size, EMPTY_FIELD_SYMBOL);
             this.DetonatedMinesCount = 0;
         }
 
@@ -23,17 +23,17 @@
         {
             get
             {
-                return this.size;
+                return this._size;
             }
 
             set
             {
-                if (value < MinBattleFieldSize || value > MaxBattleFieldSize)
+                if (value < MIN_BATTLEFIELD_SIZE || value > MAX_BATTLEFIELD_SIZE)
                 {
                     throw new ArgumentOutOfRangeException("value", value, "The battlefield size must be between 1 and 10.");
                 }
 
-                this.size = value;
+                this._size = value;
             }
         }
 
@@ -46,7 +46,7 @@
                 {
                     for (int col = 0; col < this.Size; col++)
                     {
-                        if (this.Board[row, col] != EmptyFieldSymbol && this.Board[row, col] != DetonatedMineSymbol)
+                        if (this.Board[row, col] != EMPTY_FIELD_SYMBOL && this.Board[row, col] != DETONATED_MINE_SYMBOL)
                         {
                             mines++;
                         }
@@ -73,7 +73,7 @@
                 throw new ArgumentOutOfRangeException("col", col, "Invalid value for column. The coordinates must be within the board.");
             }
 
-            if (this.Board[row, col] == EmptyFieldSymbol || this.Board[row, col] == DetonatedMineSymbol)
+            if (this.Board[row, col] == EMPTY_FIELD_SYMBOL || this.Board[row, col] == DETONATED_MINE_SYMBOL)
             {
                 throw new ArgumentException("There is no mine on that field.");
             }
@@ -167,7 +167,7 @@
         {
             if (row >= 0 && row < this.Size && col >= 0 && col < this.Size)
             {
-                this.Board[row, col] = DetonatedMineSymbol;
+                this.Board[row, col] = DETONATED_MINE_SYMBOL;
             }
         }
     }

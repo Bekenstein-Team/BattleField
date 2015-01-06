@@ -5,8 +5,8 @@
     public class BoardInitializer : IBoardInitializable
     {
         private readonly Random randomGenerator = new Random();
-        private const double MinNumberOfMinesMultiplier = 0.15;
-        private const double MaxNumberOfMinesMultiplier = 0.3;
+        private const double MIN_NUMBER_OF_MINES_MULTIPLIER = 0.15;
+        private const double MAX_NUMBER_OF_MINES_MULTIPLIER = 0.3;
 
         public string[,] InitializeBoard(int size, string emptyFieldSymbol)
         {
@@ -19,8 +19,8 @@
                 }
             }
 
-            int minMines = Convert.ToInt32(MinNumberOfMinesMultiplier * size * size);
-            int maxMines = Convert.ToInt32(MaxNumberOfMinesMultiplier * size * size);
+            int minMines = Convert.ToInt32(MIN_NUMBER_OF_MINES_MULTIPLIER * size * size);
+            int maxMines = Convert.ToInt32(MAX_NUMBER_OF_MINES_MULTIPLIER * size * size);
             int numberOfMines = this.randomGenerator.Next(minMines, maxMines + 1);
             for (int i = 0; i < numberOfMines; i++)
             {
