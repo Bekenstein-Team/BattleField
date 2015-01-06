@@ -30,8 +30,8 @@
                 Console.WriteLine(battleField);
 
             }
-            Console.WriteLine("Game over. Detonated mines: {0}", battleField.DetonatedMinesCount);
 
+            Console.WriteLine("Game over. Detonated mines: {0}", battleField.DetonatedMinesCount);
         }
 
         private static void ValidateCoordinates(int battleFieldSize, out int row, out int col)
